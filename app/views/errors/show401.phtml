@@ -1,0 +1,13 @@
+{{ content() }}
+
+<div class="jumbotron text-center">
+    <h1>Unauthorized</h1>
+    {% if session.get('auth') !== null %}
+    <p>You don't have access to this option. User can only be removed by admin</p>
+    {% else %}
+    <p>You don't have access to this option. Please login</p>
+    {% endif %}
+    <p>{{ link_to('user/index', 'Home', 'class': 'btn btn-primary') }}</p>
+
+
+</div>

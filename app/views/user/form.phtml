@@ -1,0 +1,90 @@
+{{ content() }}
+
+<div class="page-header">
+    <h2><i class="glyphicon glyphicon-edit" style="margin-right: 15px">
+        </i>User {{dispatcher.getActionName()}}
+    </h2>
+</div>
+
+<div class="col-sm-12">
+    <div class="container-fluid">
+
+        {{ form('register', 'id': 'registerForm', 'onbeforesubmit': 'return false') }}
+
+        <fieldset>
+
+            <input id="action" class="hidden" value="{{action}}">
+            {%for element in form%}
+            {% if form.checkHidden(element) %}
+            {{ element }}
+            {% endif %}
+            {% endfor %}
+
+            <div class="form-group">
+                {{ form.label('name') }}
+                {{ form.render('name', ['class': 'form-control']) }}
+            </div>
+            <div class="form-group">
+                {{ form.label('email') }}
+                {{ form.render('email',['class': 'form-control']) }}
+            </div>
+            <div class="form-group">
+                {{ form.label('password') }}
+                {{ form.render('password',['class': 'form-control']) }}
+            </div>
+
+            <div class="form-actions">
+                {{ submit_button('Send', 'class': 'btn btn-primary') }}
+            </div>
+        </fieldset>
+        </form>
+
+        {%if form.has('delete')%}
+        {{ form('user/delete/' ~ form.getValue('id') , 'id': 'deleteForm', 'class': 'delete') }}
+        {{ form.render('delete',['class': 'btn btn-danger pull-right']) }}
+        </form>
+
+        {%endif%}
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        function sendAjaxRequest(action, data, dataType) {
+            $.ajax({
+                type: "POST",
+                url: '/user/' + action,
+                data: data,
+                dataType: dataType,
+                success: function (json) {
+                    console.log(json);
+
+                    $('.alert, .text-danger').remove();
+
+                    if (json['errors']) {
+                        $('form#registerForm').before('<div class="alert alert-danger">' +
+                            '<i class="fa fa-check"></i> ' + json['errors'] + '</div>')
+                    } else {
+                        console.log(json);
+                        $('form#registerForm').before('<div class="alert alert-success">' +
+                            '<i class="fa fa-check"></i> ' + json['success'] + '</div>')
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                }
+            });
+        }
+
+        $("form#registerForm").submit(function (e) {
+            e.preventDefault();
+            data = $(this).serialize();
+            dataType = 'json';
+            action = $('#action').val();
+            console.log('user/' + action);
+            console.log(data);
+            sendAjaxRequest(action, data, dataType);
+
+        });
+    });
+</script>
