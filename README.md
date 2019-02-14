@@ -1,3 +1,5 @@
+## Phalcon user Acl
+
 create Database: 
 
 php app/cli.php main table
@@ -10,10 +12,3 @@ create User:
 
 php app/cli.php main create {email} {password} {flag}
 
-.....
-
-Simple authorized user: can create, edit other user
-
-Admin: can do the same and also delete users
-
-Not authorized user can only look users list.
